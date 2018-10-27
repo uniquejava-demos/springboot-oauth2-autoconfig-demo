@@ -59,5 +59,16 @@ if (authenticationManager != null) {
   tokenGranters.add(new ResourceOwnerPasswordTokenGranter(authenticationManager,...));
 }
 ```
-					
+
+## 开启refresh_token
+修改AuthorizationServerConfig加入`authorizedGrantTypes("password", "refresh_token")`, 测试
+
+```sh
+curl -si myapp:mypassword@localhost:8080/oauth/token -d "grant_type=refresh_token&refresh_token=e7ec8488-ec50-4160-a12b-ef72ec5cc2bf"
+```
+
+报错:
+> o.s.s.o.provider.endpoint.TokenEndpoint  : Handling error: IllegalStateException, UserDetailsService is required.
+
+解决办法是自定义UserDetailService(loadUserByUsername)然后在AuthorizationServerConfig中配置endpoints.
 
