@@ -2,7 +2,7 @@
 
 练习官方文档[OAuth2 Autoconfig](https://docs.spring.io/spring-security-oauth2-boot/docs/2.0.6.RELEASE/reference/htmlsingle/)
 
-## 开启password
+## commit1: 搞定grant_type=password
 note: 禁用httpBasic后`/oauth/token`依然生效, 原因见注解`@EnableAuthorizationServer`的注释.
 
 ### 在pom中需要单独指定spring-security-oauth2-autoconfigure的版本号
@@ -63,7 +63,7 @@ if (authenticationManager != null) {
 }
 ```
 
-## 开启refresh_token
+## commit2: 搞定refresh_token
 修改AuthorizationServerConfig加入`authorizedGrantTypes("password", "refresh_token")`, 测试
 
 ```sh
@@ -75,11 +75,11 @@ curl -si myapp:mypassword@localhost:8080/oauth/token -d "grant_type=refresh_toke
 
 解决办法是自定义UserDetailService(loadUserByUsername)然后在AuthorizationServerConfig中配置endpoints.
 
-## 定义REST API
+## commit3: 定义REST API
 API默认是受httpBasic保护的, 使用方式如下
 `curl -si -uuser001:password001 http://localhost:8080/api/todos`
 
-## Enable Resource Server的最小配置
+## commit4: Enable Resource Server的最小配置
 目标: `curl -si -H "authorization: Bearer f8c4d3e4-30b9-4314-a315-fd86214613cd" http://localhost:8080/api/todos`
 
 1. 首先要禁用httpBasic
@@ -98,6 +98,26 @@ API默认是受httpBasic保护的, 使用方式如下
 	}
 
 
+## commit5: 使用BCryptPasswordEncoder
+加入如下配置
+```java
+@Bean
+public BCryptPasswordEncoder encoder() {
+    return new BCryptPasswordEncoder();
+}
+```
+
+此时`curl myapp:mypassword@localhost:8080/oauth/token -d "grant_type=password&username=admin&password=admin"`
+
+报错:
+> {"timestamp":"2018-10-27T14:37:11.024+0000","status":401,"error":"Unauthorized","message":"Unauthorized","path":"/oauth/token"}
+
+这是因为AuthorizationServerConfig中的secret还是用的noop, 需要改成`secret(passwordEncoder.encode("mypassword"))`
+
+报错
+> {"error":"invalid_grant","error_description":"Bad credentials"}
+
+说明curl中针对client的basic认证部分过了,但是username/password部分不通过, 这是因为SecurityConfig中user和admin用户都用了noop password.
 
 
 
