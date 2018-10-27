@@ -20,12 +20,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser("user001").password("{noop}password001").roles("USER").and().withUser("admin")
-				.password("{noop}admin").roles("USER", "ADMIN");
+		auth.inMemoryAuthentication().withUser("user001").password("{noop}password001").roles("USER").and()
+				.withUser("admin").password("{noop}admin").roles("USER", "ADMIN");
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeRequests().anyRequest().authenticated().and().httpBasic();
+		http.csrf().disable()
+		.anonymous().disable()
+		.httpBasic().disable()
+		.authorizeRequests().anyRequest().authenticated();
 	}
 }
