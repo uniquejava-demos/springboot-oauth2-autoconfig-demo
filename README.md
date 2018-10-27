@@ -1,6 +1,9 @@
 
 
-练习官方文档[OAuth2 Autoconfig](https://docs.spring.io/spring-security-oauth2-boot/docs/2.0.6.RELEASE/reference/htmlsingle/)
+练习官方文档
+[OAuth2 Autoconfig](https://docs.spring.io/spring-security-oauth2-boot/docs/2.0.6.RELEASE/reference/htmlsingle/)
+
+主要参考了: [Spring Boot 2, OAauth2 and JWT — Authorization Server — Part1](https://medium.com/@justdpk/spring-boot-2-oaauth2-and-jwt-with-minimal-code-configuration-part1-146202bbdfb0)
 
 ## commit1: 搞定grant_type=password
 note: 禁用httpBasic后`/oauth/token`依然生效, 原因见注解`@EnableAuthorizationServer`的注释.
@@ -76,6 +79,8 @@ curl -si myapp:mypassword@localhost:8080/oauth/token -d "grant_type=refresh_toke
 解决办法是自定义UserDetailService(loadUserByUsername)然后在AuthorizationServerConfig中配置endpoints.
 
 ## commit3: 定义REST API
+1. 直接使用RestController注解.
+
 API默认是受httpBasic保护的, 使用方式如下
 `curl -si -uuser001:password001 http://localhost:8080/api/todos`
 
@@ -99,7 +104,11 @@ API默认是受httpBasic保护的, 使用方式如下
 
 
 ## commit5: 使用BCryptPasswordEncoder
-加入如下配置
+1. 在ApplicationConfig中定义encoder.
+2. 所有出现`{noop}xxxx`的地方改成`passwordEncoder.encode(xxxx)`.
+
+详细: 第一步加入如下配置
+
 ```java
 @Bean
 public BCryptPasswordEncoder encoder() {
@@ -119,5 +128,21 @@ public BCryptPasswordEncoder encoder() {
 
 说明curl中针对client的basic认证部分过了,但是username/password部分不通过, 这是因为SecurityConfig中user和admin用户都用了noop password.
 
+## commit6: 使用JWT做为token的格式.
+1. ApplicationConfig中定义两个Bean(JwtAccessTokenConverter和JwtTokenStore)
+2. AuthorizationServerConfig中设置: endpoints.tokenStore(tokenStore).accessTokenConverter(accessTokenConverter) 这样/auth/token的output就变成了jwt类型的token.
+3. ResourceServerConfig中设置(我没有设置!!!访问/api/todos也能正常解析jwt token)
 
+尝试了使用新版jwt token访问`/api/todos`可能碰到的错误
+
+	401
+	{
+	  "error": "invalid_token",
+	  "error_description": "Cannot convert access token to JSON"
+	}
+	
+	{
+	  "error": "invalid_token",
+	  "error_description": "Encoded token is a refresh token"
+	}
 
