@@ -129,6 +129,20 @@ public BCryptPasswordEncoder encoder() {
 说明curl中针对client的basic认证部分过了,但是username/password部分不通过, 这是因为SecurityConfig中user和admin用户都用了noop password.
 
 ## commit6: 使用JWT做为token的格式.
+前五步都未使用spring-security-oauth2-autoconfigure的任何功能, pom也可以配置如下
+
+```xml
+<dependency>
+  <groupId>org.springframework.security.oauth</groupId>
+  <artifactId>spring-security-oauth2</artifactId>
+  <version>2.2.3.RELEASE</version>
+</dependency>
+```
+Autoconfig一是引入了JWT相关的类, 另一个是增加了`@EnableOAuth2Sso`这个注解.
+
+[EnableResourceServer和EnableOAuth2Sso的区别](https://stackoverflow.com/questions/42938782/spring-enableresourceserver-vs-enableoauth2sso)
+
+
 1. ApplicationConfig中定义两个Bean(JwtAccessTokenConverter和JwtTokenStore)
 2. AuthorizationServerConfig中设置: endpoints.tokenStore(tokenStore).accessTokenConverter(accessTokenConverter) 这样/auth/token的output就变成了jwt类型的token.
 3. ResourceServerConfig中设置(我没有设置!!!访问/api/todos也能正常解析jwt token)
