@@ -72,3 +72,9 @@ curl -si myapp:mypassword@localhost:8080/oauth/token -d "grant_type=refresh_toke
 
 解决办法是自定义UserDetailService(loadUserByUsername)然后在AuthorizationServerConfig中配置endpoints.
 
+## 定义REST API
+API默认是受httpBasic保护的, 使用方式如下
+`curl -si -uuser001:password001 http://localhost:8080/api/todos`
+
+
+

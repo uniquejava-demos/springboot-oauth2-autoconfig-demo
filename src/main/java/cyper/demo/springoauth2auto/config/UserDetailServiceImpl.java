@@ -1,4 +1,4 @@
-package cyper.demo.springoauth2auto;
+package cyper.demo.springoauth2auto.config;
 
 import java.util.Arrays;
 import java.util.List;

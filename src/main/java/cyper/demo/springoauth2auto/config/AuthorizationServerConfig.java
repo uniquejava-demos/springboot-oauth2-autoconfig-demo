@@ -1,4 +1,4 @@
-package cyper.demo.springoauth2auto;
+package cyper.demo.springoauth2auto.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
