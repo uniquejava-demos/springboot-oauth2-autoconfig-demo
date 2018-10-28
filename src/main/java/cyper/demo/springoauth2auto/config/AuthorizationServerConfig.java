@@ -15,34 +15,34 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
-	private final AuthenticationManager authenticationManager;
-	private final UserDetailsService userDetailsService;
-	private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
 
-	private final TokenStore tokenStore;
+    private final TokenStore tokenStore;
 
-	private final AccessTokenConverter accessTokenConverter;
+    private final AccessTokenConverter accessTokenConverter;
 
-	@Autowired
-	public AuthorizationServerConfig(final AuthenticationManager authenticationManager,
-			final UserDetailsService userDetailsService, final PasswordEncoder passwordEncoder,
-			final TokenStore tokenStore, final AccessTokenConverter accessTokenConverter) {
-		this.authenticationManager = authenticationManager;
-		this.userDetailsService = userDetailsService;
-		this.passwordEncoder = passwordEncoder;
-		this.tokenStore = tokenStore;
-		this.accessTokenConverter = accessTokenConverter;
-	}
+    @Autowired
+    public AuthorizationServerConfig(final AuthenticationManager authenticationManager,
+            final UserDetailsService userDetailsService, final PasswordEncoder passwordEncoder,
+            final TokenStore tokenStore, final AccessTokenConverter accessTokenConverter) {
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
+        this.tokenStore = tokenStore;
+        this.accessTokenConverter = accessTokenConverter;
+    }
 
-	@Override
-	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		clients.inMemory().withClient("myapp").authorizedGrantTypes("password", "refresh_token")
-				.secret(passwordEncoder.encode("mypassword")).scopes("all");
-	}
+    @Override
+    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+        clients.inMemory().withClient("myapp").authorizedGrantTypes("password", "refresh_token")
+                .secret(passwordEncoder.encode("mypassword")).scopes("all");
+    }
 
-	@Override
-	public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-		endpoints.authenticationManager(authenticationManager).userDetailsService(userDetailsService)
-				.tokenStore(tokenStore).accessTokenConverter(accessTokenConverter);
-	}
+    @Override
+    public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+        endpoints.authenticationManager(authenticationManager).userDetailsService(userDetailsService)
+                .tokenStore(tokenStore).accessTokenConverter(accessTokenConverter);
+    }
 }

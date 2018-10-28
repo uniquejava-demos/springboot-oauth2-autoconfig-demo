@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
 
-	@Override
-	public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-		return new User("user001", "{noop}xxx", getAuthority());
-	}
+    @Override
+    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+        return new User("user001", "{noop}xxx", getAuthority());
+    }
 
-	private List<SimpleGrantedAuthority> getAuthority() {
-		return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
-	}
+    private List<SimpleGrantedAuthority> getAuthority() {
+        return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+    }
 }

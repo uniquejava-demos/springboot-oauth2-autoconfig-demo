@@ -9,14 +9,13 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 @Configuration
 public class ApplicationConfig {
-	
-	private static final String JWT_KEY = "jwt-key-should-be-secret";
+
+    private static final String JWT_KEY = "jwt-key-should-be-secret";
 
     @Bean
     public BCryptPasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
-    
 
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {

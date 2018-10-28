@@ -12,23 +12,23 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 @Configuration
 @EnableResourceServer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
-	private static final String RESOURCE_ID = "resource-id";
+    private static final String RESOURCE_ID = "resource-id";
 
-	private final TokenStore tokenStore;
+    private final TokenStore tokenStore;
 
-	@Autowired
-	public ResourceServerConfig(final TokenStore tokenStore) {
-		this.tokenStore = tokenStore;
-	}
+    @Autowired
+    public ResourceServerConfig(final TokenStore tokenStore) {
+        this.tokenStore = tokenStore;
+    }
 
-	@Override
-	public void configure(final ResourceServerSecurityConfigurer resources) {
-		resources.resourceId(RESOURCE_ID).stateless(true).tokenStore(tokenStore);
-	}
+    @Override
+    public void configure(final ResourceServerSecurityConfigurer resources) {
+        resources.resourceId(RESOURCE_ID).stateless(true).tokenStore(tokenStore);
+    }
 
-	@Override
-	public void configure(final HttpSecurity http) throws Exception {
-		http.anonymous().disable().authorizeRequests().antMatchers("/api/**").access("hasRole('ADMIN')").and()
-				.exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
-	}
+    @Override
+    public void configure(final HttpSecurity http) throws Exception {
+        http.anonymous().disable().authorizeRequests().antMatchers("/api/**").access("hasRole('ADMIN')").and()
+                .exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
+    }
 }
